@@ -1,79 +1,78 @@
 import csv
-import json
 
 def readData():
+    fields = ("Name", "Boston", "Chicago", "New York")
+    file = open("runners1.txt", "r")
     data = []
-    try:
-        with open("runners.txt", "r") as file:
-            data = json.load(file)
-    except IOError:
-        print("Creating empty dictionary...")
+    dReader = csv.DictReader(file, fieldnames=fields, delimiter=",")
+
+    for row in dReader:
+        data.append(row)
+
+    file.close()
     return data
 
 def displayAll(data):
-    if len(data) == 0:
-        print("No data has been entered")
-        return
-    
-    print()
-    print("%-10s %012s %4s" % ("State", "Capital", "Year of Statehood"))
-    for state in data:
-        print("%-10s %-12s %4s" % (state['name'], state['capital'], state['year']))
+    formatString = "%-8s %-10s %-10s %-10s"
+    print(formatString % ("Name", "Boston", "Chicago", "New York"))
 
-    print()
+    for runner in data:
+        print("%-8s %-10s %-10s %-10s" % (runner["Name"], runner["Boston"], runner["Chicago"], runner["New York"]))
 
 def displayRunner(data):
-    if len(data) == 0:
-        print("No data has been entered")
-        return
+    formatString = "%-8s %-10s"
+    exact = input("Enter a runner: ")
+
+    for runner in data:
+        if runner["Name"] == exact:
+            print(formatString % ("Name", "Average"))
+            print(formatString % (runner["Name"], ((int(runner["Boston"]) + int(runner["Chicago"]) + int(runner["New York"]))//3)))
     
-    print()
-    print("%-10s %012s %4s" % ("State", "Capital", "Year of Statehood"))
-    for state in data:
-        print("%-10s %-12s %4s" % (state['name'], state['capital'], state['year']))
-
-    print()
-
 def addRunner(data):
-    d = {}
-    d['name'] = input("Enter state name: ")
-    d['capital'] = input("Enter state capital: ")
-    d['year'] = input("Enter year of statehood: ")
-
-    data.append(d)
+    nom = input("Enter runner name: ")
+    boston = int(input("Enter time (in minutes) the runner ran the Boston Marathon: "))
+    chicago = int(input("Enter time (in minutes) the runner ran the Chicago Marathon: "))
+    newYork = int(input("Enter time (in minutes) the runner ran the New York Marathon: "))
+    record = {'Name': nom, 'Boston': boston, 'Chicago': chicago, 'New York': newYork}
+    data.append(record)
     return data
 
 def saveAndExit(data):
-    with open("runners.txt", "w") as file:
-        json.dump(data, file)
-
-def reader():
-    csv.DictReader()
+    fields = ("Name", "Boston", "Chicago", "New York")
+    file = open("runners1.txt", "w")
+    dWriter = csv.DictWriter(file, fieldnames=fields, delimiter=",", lineterminator="\n")
+    dWriter.writerows(data)
+    
+    file.close()
 
 def main():
-    states = readData()
+    runners = readData()
 
     while True:
         print("""
-        Menu options. Choose 1, 2, or 3
-            1. Enter a new state, capital, and year of statehood
-            2. Display capital data
-            3. Exit
+        Menu options. Choose 1, 2, 3, or 4:
+            1. Display all data for all racers
+            2. Display a runner's individual race average (in minutes)
+            3. Add a new runner and race data
+            4. Save & Exit
             
          """)
         
-        opt = input("Enter your choice, 1, 2, or 3: ")
+        opt = input("Enter your choice, 1, 2, 3, or 4: ")
 
         if opt == "1":
-            states = addRunner(states)
+            displayAll(runners) 
 
         elif opt == "2":
-            displayRunner(states)
+            displayRunner(runners)
 
         elif opt == "3":
+            runners = addRunner(runners)
+
+        elif opt == "4":
             print()
             print("Goodbye")
-            saveAndExit(states)
+            saveAndExit(runners)
             break
 
         else:
