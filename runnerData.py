@@ -33,7 +33,7 @@ def addRunner(data):
     boston = int(input("Enter time (in minutes) the runner ran the Boston Marathon: "))
     chicago = int(input("Enter time (in minutes) the runner ran the Chicago Marathon: "))
     newYork = int(input("Enter time (in minutes) the runner ran the New York Marathon: "))
-    record = {'Name': nom, 'Boston': boston, 'Chicago': chicago, 'New York': newYork}
+    record = {"Name": nom, "Boston": boston, "Chicago": chicago, "New York": newYork}
     data.append(record)
     return data
 
@@ -76,6 +76,7 @@ def main():
             break
 
         else:
+            print()
             print("Invalid entry, please re-enter your choice")
             print()
 
