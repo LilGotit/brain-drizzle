@@ -1,1 +1,1 @@
-Various solutions via code.
+Big programs and small projects, alike.
