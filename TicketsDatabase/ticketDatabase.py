@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect("tickets.db")
+conn = sqlite3.connect("tickets5.db")
 cur = conn.cursor()     
 
 def displayAllTickets():
@@ -13,10 +13,10 @@ def displayAllTickets():
         printStuff(results)
     else:
         print("No data found")
-     
+
     print()
 
-def addTicket():                         # add a new ticket
+def addTicket():
     actual_speed = int(input("Enter actual speed: "))
     posted_speed = int(input("Enter posted speed: "))
     age = int(input("Enter age of offender: "))
@@ -25,34 +25,31 @@ def addTicket():                         # add a new ticket
     data = (None, actual_speed, posted_speed, age, violator_sex)
     sql = "INSERT INTO tickets VALUES (?, ?, ?, ?, ?)"
 
-    cur.execute(sql, data)   # add the record, save changes
-    conn.commit()            
-
+    cur.execute(sql, data)
+    conn.commit()   
+    
 def displayTicketsByOffender():
-    name = input("Enter sex of offender: ")   # input the user's name. we are assuming each name is unique
-    data = (name, )                     # this is a singleton tuple; note the comma and a blank
+    violator_sex = input("Enter sex of offender: ")
+    data = (violator_sex, )
 
-    sql = "SELECT * FROM travel WHERE name = ?"  # the WHERE clause allows specifying a filter
+    sql = "SELECT * FROM tickets WHERE violator_sex = ?"
     
     cur.execute(sql, data)
-    results = cur.fetchall()       # If name in table, fetchall() returns all trips with that name  
+    results = cur.fetchall()
 
     if results:
-        printStuff(results)        # if records exists, then print then
+        printStuff(results)
     else:
-        print('Name not found')    # otherwise, no match...
+        print("Name not found")
         print()
-        
-def printStuff(data):    # helper function, just prints whatever was selected
-    print(" %-10s %-8s %-15s %-4s " % ('tripID', 'Name', 'Destination', 'MGP'))  # headings
 
-    for row in data:         # row[0] is the id, row[3] is miles, row[4] is gallons
-        if row[4] != 0:
-            mpg = row[3] / row[4]   # calculate mpg, avoid division by 0
-        else:
-            mpg = 0
+def printStuff(data):
+    print("%-10s %-12s %-10s %-5s %-12s " % ("ticketID", "Posted MPH", "MPH Over", "Age", "Violator Sex"))
+
+    for row in data:
+        over = row[1] - row[2]
             
-        print(" %-10d %-8s %-15s %2.1f " % (row[0], row[1], row[2], mpg))     
+        print(" %-10d %-12d %-10d %-5d %-12s " % (row[0], row[1], over, row[3], row[4]))     
      
     print()
 
