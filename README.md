@@ -1,1 +1,1 @@
-Big programs and small projects, alike.
+Programs, projects, problems, plans.
